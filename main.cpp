@@ -1,6 +1,10 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include "./rapidjson/include/rapidjson/document.h"
+#include "./rapidjson/include/rapidjson/filereadstream.h"
+#include "./rapidjson/include/rapidjson/stringbuffer.h"
+#include "./rapidjson/include/rapidjson/writer.h"
 
 using namespace std;
 
@@ -93,15 +97,110 @@ class person{
         vector<int> Connections;
 
     public:
-        person();
+        person(){}
 
-        void add_person(int ,string ,int ,string ,string ,string ,int*);
+        void config_person(int I,string N,int Y,string U,string M,string J){
+            ID = I;
+            Name = N;
+            YearOfBirth = Y;
+            University = U;
+            Major = M;
+            JobPlace = J;
+        }
 
-        ~person();
+        void config_connections(vector<int> C){
+            Connections = C;
+        }
+
+
+        int get_ID(){
+            return this->ID;
+        }
+
+        string get_Name(){
+            return this->Name;
+        }
+
+        int get_YearOfBirth(){
+            return this->YearOfBirth;
+        }
+
+        string get_University(){
+            return this->University;
+        }
+
+        string get_Major(){
+            return this->Major;
+        }
+
+        string get_JobPlace(){
+            return this->JobPlace;
+        }
+
+        vector<int> get_connections(){
+            return Connections;
+        }
+
+        ~person(){}
 };
+
+//--------**readJSON function**-----------------------------------------------------------------------------------------------------------------------------
+
+void readJSON(const string& filename, vector<person>& people) {
+    FILE* fp = fopen(filename.c_str(), "rb");
+    if (!fp) {
+        std::cerr << "Could not open file " << filename << std::endl;
+        return;
+    }
+
+    char readBuffer[65536];
+    rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+
+    rapidjson::Document document;
+    document.ParseStream(is);
+    fclose(fp);
+
+    if (document.HasParseError()) {
+        std::cerr << "Error parsing JSON file" << std::endl;
+        return;
+    }
+
+    for (auto& Person : document.GetArray()) {
+        person p;
+        p.config_person(Person["ID"].GetInt(),
+            Person["Name"].GetString(),
+            Person["Year of Birth"].GetInt(),
+            Person["University"].GetString(),
+            Person["Major"].GetString(),
+            Person["Job Place"].GetString());
+        
+        vector<int> C;
+        for (auto& connection : Person["Connections"].GetArray()) {
+            C.push_back(connection.GetInt());
+        }
+        p.config_connections(C);
+        
+        people.push_back(p);
+    }
+}
 
 //--------**Main Function**-----------------------------------------------------------------------------------------------------------------------------
 
 int main(){
-    
+    vector<person> people;
+    readJSON("E:/DS Project/inputFile.json", people);
+
+    for (auto& pe : people) {
+        std::cout << "ID: " << pe.get_ID() << std::endl;
+        std::cout << "Name: " << pe.get_Name() << std::endl;
+        std::cout << "Year of Birth: " << pe.get_YearOfBirth() << std::endl;
+        std::cout << "University: " << pe.get_University() << std::endl;
+        std::cout << "Major: " << pe.get_Major() << std::endl;
+        std::cout << "Job Place: " << pe.get_JobPlace() << std::endl;
+        std::cout << "Connections: ";
+        for (const auto& conn : pe.get_connections()) {
+            std::cout << conn << " ";
+        }
+        std::cout << std::endl << std::endl;
+    }
 }
