@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <list>
 #include <queue>
 #include "./rapidjson/include/rapidjson/document.h"
 #include "./rapidjson/include/rapidjson/filereadstream.h"
@@ -109,7 +110,9 @@ class person{
         }
 
         void config_connections(vector<int> C){
-            Connections = C;
+            for(auto& Con : C){
+                Connections.push_back(Con);
+            }
         }
 
 
@@ -184,23 +187,47 @@ void readJSON(const string& filename, vector<person>& people) {
     }
 }
 
+//--------**Function to determine the edges**-----------------------------------------------------------------------------------------------------------------------------
+
+void determine_edges(vector<person>& people,  vector<vector <int>>& gra){
+    int i=0;
+    for (auto& pe : people) {
+        int j = 0;
+        for (const auto& conn : pe.get_connections()){
+            gra[i][j] = conn;
+            j++;
+        }
+        i++;
+    }
+}
+
 //--------**Main Function**-----------------------------------------------------------------------------------------------------------------------------
 
 int main(){
     vector<person> people;
     readJSON("E:/DS Project/inputFile.json", people);
 
-    for (auto& pe : people) {
-        std::cout << "ID: " << pe.get_ID() << std::endl;
-        std::cout << "Name: " << pe.get_Name() << std::endl;
-        std::cout << "Year of Birth: " << pe.get_YearOfBirth() << std::endl;
-        std::cout << "University: " << pe.get_University() << std::endl;
-        std::cout << "Major: " << pe.get_Major() << std::endl;
-        std::cout << "Job Place: " << pe.get_JobPlace() << std::endl;
-        std::cout << "Connections: ";
-        for (const auto& conn : pe.get_connections()) {
-            std::cout << conn << " ";
+    vector<vector <int>> gra(people.size(), vector<int>(people.size(),-1));
+    determine_edges(people, gra);
+
+    for(int i=0 ; i < gra.size() ; i++){
+        for(int j=0 ; gra[i][j] != -1 ; j++){
+            cout<<gra[i][j]<<" ";
         }
-        std::cout << std::endl << std::endl;
+        cout<<endl;
     }
+
+    // for (auto& pe : people) {
+    //     std::cout << "ID: " << pe.get_ID() << std::endl;
+    //     std::cout << "Name: " << pe.get_Name() << std::endl;
+    //     std::cout << "Year of Birth: " << pe.get_YearOfBirth() << std::endl;
+    //     std::cout << "University: " << pe.get_University() << std::endl;
+    //     std::cout << "Major: " << pe.get_Major() << std::endl;
+    //     std::cout << "Job Place: " << pe.get_JobPlace() << std::endl;
+    //     std::cout << "Connections: ";
+    //     for (const auto& conn : pe.get_connections()) {
+    //         std::cout << conn << " ";
+    //     }
+    //     std::cout << std::endl << std::endl;
+    // }
 }
