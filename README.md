@@ -97,5 +97,3 @@ ID : 1
 - **JSON Parsing:** Utilizes the `rapidjson` library to parse JSON input files.
 - **Edge Determination:** Populates the graph adjacency list based on the connections defined for each person.
 - **Connection Suggestion:** Based on predefined similarity metrics and the shortest path in the graph, it suggests connections ranked by score.
-
-This project demonstrates a practical application of graph theory in social network analysis, leveraging BFS for shortest path calculation and a custom scoring system for connection recommendations【7:0†source】【7:1†source】【7:2†source】【7:3†source】【7:4†source】【7:5†source】.
