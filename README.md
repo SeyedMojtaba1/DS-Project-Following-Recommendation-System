@@ -1,5 +1,3 @@
-Here’s an explanation of the project based on the provided code and comments.
-
 ### Project Explanation
 
 This project simulates a social network, allowing users to find connection suggestions based on their profiles. It reads input data from a JSON file, constructs a graph representing the network, and then computes and prints suggested connections for each person in the network. Below are the key components and their functionalities:
