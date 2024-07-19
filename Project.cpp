@@ -79,10 +79,10 @@ class graph{
             // function call to find the distance of all nodes and their parent nodes
             bfs(S, par, dist);
 
-            if (dist[D] == 1e9) {
-                cout << "Source and Destination are not connected";
-                return -1;
-            }
+            // if (dist[D] == 1e9) {
+            //     cout << "Source and Destination are not connected";
+            //     return -1;
+            // }
 
             // vector path stores the shortest path
             vector<int> path;
@@ -325,8 +325,18 @@ int score_of_suggestion(graph& gra, person& original, person& subsidiary){
 }
 
 vector<int> list_of_suggestion(graph &gra, vector<person>& peo, person& original){
+    bool isConnect;
     for(int i = 0; i < gra.get_size_graph() ; i++){
-        if(i == original.get_ID()){
+        isConnect = false;
+        for(int j = 0 ; j < original.get_connections().size() ; j++){
+            if(i == original.get_connections()[j]-1){
+                isConnect = true;
+            }
+        }
+        if(isConnect == true){
+            continue;
+        }
+        if(i == original.get_ID()-1){
             continue;
         }
         else if(score_of_suggestion(gra, original, peo[i]) >= 10){
@@ -355,7 +365,13 @@ int main(){
 
     graph Graph(gra);
     
-    list_of_suggestion(Graph, people, people[2]);
+    for(int i = 1 ; i <= people.size() ; i++){
+        cout<<"For ID "<<i<<endl;
+        list_of_suggestion(Graph, people, people[i]);
+    }
+    // cout<<people.size();
+    // list_of_suggestion(Graph, people, people[6]);
+
 
     // for(int i=0 ; i < gra.size() ; i++){
     //     for(int j=0 ; gra[i][j] != -1 ; j++){
